@@ -655,6 +655,151 @@
   </style>
 </head>
 <body>
+<!-- In-App Browser Warning Banner -->
+<style>
+  #inapp-browser-banner {
+    display: none;
+    background: #fffbeb;
+    border: 1px solid #f59e0b;
+    border-left: 5px solid #d97706;
+    color: #1f2937;
+    padding: 16px;
+    margin: 12px auto;
+    max-width: 960px;
+    border-radius: 8px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 9999;
+    position: relative;
+  }
+  #inapp-browser-banner h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #b45309;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #inapp-browser-banner p {
+    margin: 0 0 10px 0;
+  }
+  #inapp-browser-banner ol {
+    margin: 0 0 12px 0;
+    padding-left: 20px;
+  }
+  #inapp-browser-banner li {
+    margin-bottom: 4px;
+  }
+  .inapp-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .inapp-btn {
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #111827;
+    cursor: pointer;
+  }
+  .inapp-btn-primary {
+    background: #d97706;
+    border-color: #d97706;
+    color: #ffffff;
+  }
+  .inapp-btn-primary:hover {
+    background: #b45309;
+  }
+  .inapp-btn:hover {
+    background: #f3f4f6;
+  }
+  .inapp-note {
+    font-size: 12px;
+    color: #4b5563;
+    margin: 0;
+  }
+</style>
+
+<div id="inapp-browser-banner" role="alert">
+  <h4>⚠ Limited browser detected</h4>
+  <p>
+    <strong>Olympuz Fitness Gym</strong> looks like it was opened inside an app browser such as Facebook, Messenger, Instagram, or another social media app. For best results—especially <strong>Install/Add to Home Screen</strong>, offline use, and saved records—open it in your default browser.
+  </p>
+  <ol>
+    <li><strong>Android:</strong> tap the app menu <strong>⋮</strong> then choose <strong>Open in browser</strong> / <strong>Open in Chrome</strong>.</li>
+    <li><strong>iPhone/iPad:</strong> tap the share/menu button, then choose <strong>Open in Safari</strong>. To install, use Safari → Share → <strong>Add to Home Screen</strong>.</li>
+  </ol>
+  <div class="inapp-btn-group">
+    <button type="button" id="btn-open-external" class="inapp-btn inapp-btn-primary">Open in Browser</button>
+    <button type="button" id="btn-copy-link" class="inapp-btn">Copy Link</button>
+    <button type="button" id="btn-hide-banner" class="inapp-btn">Hide</button>
+  </div>
+  <p class="inapp-note" id="inapp-status-note">
+    If the button is blocked by the social app, use the manual menu steps above.
+  </p>
+</div>
+
+<script>
+  (function () {
+    const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+    // Detects Facebook, Messenger, Instagram, TikTok, Twitter/X, LinkedIn, Line, Snapchat, and generic Android WebViews
+    const inAppRegex = /(FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram|BytedanceWebview|musical_ly|TikTok|Twitter|LinkedInApp|Line\/|Snapchat|; wv\))/i;
+
+    const banner = document.getElementById("inapp-browser-banner");
+    if (!banner || !inAppRegex.test(ua)) return;
+
+    banner.style.display = "block";
+
+    const currentUrl = window.location.href;
+    const isAndroid = /Android/i.test(ua);
+    const statusNote = document.getElementById("inapp-status-note");
+
+    // 1. Open in Browser button
+    document.getElementById("btn-open-external").addEventListener("click", function () {
+      if (isAndroid) {
+        // Android Chrome intent scheme forces external browser launch
+        const cleanUrl = currentUrl.replace(/^https?:\/\//i, "");
+        window.location.href = "intent://" + cleanUrl + "#Intent;scheme=https;package=com.android.chrome;end";
+      } else {
+        // iOS does not allow universal external browser intents from webviews
+        window.open(currentUrl, "_blank");
+        statusNote.textContent = "iOS blocks automatic switching—please tap the Share/Menu icon and choose 'Open in Safari'.";
+      }
+    });
+
+    // 2. Copy Link button
+    document.getElementById("btn-copy-link").addEventListener("click", function () {
+      const btn = this;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(currentUrl).then(function () {
+          btn.textContent = "Copied!";
+          setTimeout(function () { btn.textContent = "Copy Link"; }, 2500);
+        });
+      } else {
+        const tempInput = document.createElement("input");
+        tempInput.value = currentUrl;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        btn.textContent = "Copied!";
+        setTimeout(function () { btn.textContent = "Copy Link"; }, 2500);
+      }
+    });
+
+    // 3. Hide button
+    document.getElementById("btn-hide-banner").addEventListener("click", function () {
+      banner.style.display = "none";
+    });
+  })();
+</script>
 
   <header>
     <div class="brand">
