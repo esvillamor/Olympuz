@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <title>Olympuz Fitness Gym — Body Analyzer & Pre-Registration</title>
   <style>
     :root {
@@ -17,6 +17,7 @@
       --success: #10b981;
       --warning: #f59e0b;
       --danger: #ef4444;
+      --tooltip-bg: #272c38;
     }
 
     * {
@@ -24,6 +25,7 @@
       margin: 0;
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -31,17 +33,19 @@
       color: var(--text-main);
       line-height: 1.5;
       padding-bottom: 3rem;
+      overflow-x: hidden;
     }
 
+    /* Header & Offline Status */
     header {
       background: linear-gradient(135deg, #14171f 0%, #1f2430 100%);
       border-bottom: 2px solid var(--accent);
-      padding: 1.25rem 1.5rem;
+      padding: 1rem 1.25rem;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .brand {
@@ -54,36 +58,38 @@
       background: var(--accent);
       color: #000;
       font-weight: 900;
-      font-size: 1.25rem;
-      width: 42px;
-      height: 42px;
+      font-size: 1.15rem;
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
       display: grid;
       place-items: center;
       letter-spacing: -1px;
+      flex-shrink: 0;
     }
 
     .brand h1 {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       letter-spacing: 0.5px;
       text-transform: uppercase;
+      line-height: 1.2;
     }
 
     .brand p {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
     }
 
     .status-badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
       background: rgba(16, 185, 129, 0.15);
       border: 1px solid var(--success);
       color: var(--success);
-      padding: 0.35rem 0.85rem;
+      padding: 0.35rem 0.75rem;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 600;
     }
 
@@ -92,20 +98,23 @@
       height: 8px;
       border-radius: 50%;
       background: var(--success);
+      flex-shrink: 0;
     }
 
+    /* Layout Container */
     .container {
       max-width: 1150px;
-      margin: 1.5rem auto;
-      padding: 0 1rem;
+      margin: 1.25rem auto;
+      padding: 0 0.9rem;
       display: grid;
       grid-template-columns: 1fr 1.15fr;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     @media (max-width: 880px) {
       .container {
         grid-template-columns: 1fr;
+        gap: 1rem;
       }
     }
 
@@ -113,44 +122,160 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      min-width: 0;
     }
 
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.75rem;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.7rem;
       border-bottom: 1px solid var(--border);
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.6rem;
     }
 
     .card-header h2 {
-      font-size: 1.1rem;
+      font-size: 1.02rem;
       color: var(--accent);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
+    /* Form Controls */
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.9rem;
+    }
+
+    @media (max-width: 520px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+      }
+      header {
+        padding: 0.9rem 1rem;
+      }
+      .card {
+        padding: 1rem;
+      }
     }
 
     .full-width {
       grid-column: 1 / -1;
     }
 
+    .field-group {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+      margin-bottom: 0.35rem;
+    }
+
     label {
-      display: block;
       font-size: 0.82rem;
       color: var(--text-muted);
-      margin-bottom: 0.35rem;
       font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+    }
+
+    /* Accessible Hover & Touch Tooltip */
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .info-btn {
+      background: rgba(245, 176, 20, 0.16);
+      color: var(--accent);
+      border: 1px solid rgba(245, 176, 20, 0.45);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: background 0.2s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .info-btn:hover,
+    .info-btn:focus,
+    .tooltip-wrapper.active .info-btn {
+      background: var(--accent);
+      color: #000;
+      outline: none;
+    }
+
+    .tooltip-bubble {
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: -8px;
+      width: 230px;
+      max-width: 78vw;
+      background: var(--tooltip-bg);
+      color: var(--text-main);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.76rem;
+      font-weight: 400;
+      line-height: 1.4;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
+      z-index: 50;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      transform: translateY(4px);
+    }
+
+    .tooltip-bubble::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      right: 13px;
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--accent) transparent transparent transparent;
+    }
+
+    .tooltip-wrapper:hover .tooltip-bubble,
+    .tooltip-wrapper:focus-within .tooltip-bubble,
+    .tooltip-wrapper.active .tooltip-bubble {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 520px) {
+      .tooltip-bubble {
+        right: 0;
+        width: 245px;
+      }
+      .tooltip-bubble::after {
+        right: 5px;
+      }
     }
 
     input, select {
@@ -158,9 +283,10 @@
       background: var(--bg-input);
       border: 1px solid var(--border);
       color: var(--text-main);
-      padding: 0.65rem 0.85rem;
+      padding: 0.72rem 0.85rem;
       border-radius: 8px;
-      font-size: 0.95rem;
+      font-size: 16px; /* Prevents iOS Safari auto-zoom on focus */
+      min-height: 44px; /* Touch-friendly target size */
       outline: none;
       transition: border-color 0.2s;
     }
@@ -171,22 +297,24 @@
 
     .section-divider {
       grid-column: 1 / -1;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--accent);
-      margin-top: 0.5rem;
+      margin-top: 0.4rem;
       border-bottom: 1px dashed var(--border);
       padding-bottom: 0.25rem;
     }
 
+    /* Buttons */
     .btn {
       cursor: pointer;
       border: none;
       border-radius: 8px;
-      padding: 0.75rem 1.2rem;
+      padding: 0.75rem 1.1rem;
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
+      min-height: 42px;
       transition: all 0.2s;
       display: inline-flex;
       align-items: center;
@@ -198,7 +326,9 @@
       background: var(--accent);
       color: #111;
       width: 100%;
-      margin-top: 1rem;
+      margin-top: 1.1rem;
+      min-height: 48px;
+      font-size: 0.95rem;
     }
 
     .btn-primary:hover {
@@ -209,8 +339,9 @@
       background: var(--bg-input);
       color: var(--text-main);
       border: 1px solid var(--border);
-      padding: 0.4rem 0.75rem;
+      padding: 0.45rem 0.8rem;
       font-size: 0.8rem;
+      min-height: 36px;
     }
 
     .btn-secondary:hover {
@@ -222,39 +353,57 @@
       background: rgba(239, 68, 68, 0.15);
       color: var(--danger);
       border: 1px solid rgba(239, 68, 68, 0.4);
-      padding: 0.35rem 0.65rem;
-      font-size: 0.78rem;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.8rem;
+      min-height: 36px;
     }
 
+    /* Results & Analysis */
     .empty-state {
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 2.5rem 1rem;
       color: var(--text-muted);
     }
 
     .metrics-summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
+      gap: 0.65rem;
+      margin-bottom: 1.1rem;
+    }
+
+    @media (max-width: 440px) {
+      .metrics-summary {
+        grid-template-columns: 1fr;
+      }
+      .metric-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+        padding: 0.75rem 1rem;
+      }
+      .metric-box .tag {
+        margin-top: 0;
+      }
     }
 
     .metric-box {
       background: var(--bg-input);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0.85rem;
+      padding: 0.8rem 0.65rem;
       text-align: center;
     }
 
     .metric-box .val {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--accent);
     }
 
     .metric-box .lbl {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
       text-transform: uppercase;
     }
@@ -268,40 +417,44 @@
       background: rgba(255, 255, 255, 0.08);
     }
 
-    .health-note {
-      background: rgba(245, 176, 20, 0.1);
+    .coach-note {
+      background: rgba(245, 176, 20, 0.09);
       border: 1px solid rgba(245, 176, 20, 0.35);
       border-radius: 8px;
-      padding: 0.85rem 1rem;
-      font-size: 0.85rem;
+      padding: 0.85rem;
+      font-size: 0.84rem;
+      color: var(--text-main);
       margin-bottom: 1rem;
-      color: #fde68a;
+    }
+
+    .coach-note strong {
+      color: var(--accent);
     }
 
     .program-box {
       background: #13161c;
       border-left: 4px solid var(--accent);
       border-radius: 8px;
-      padding: 1.15rem;
-      margin-top: 1rem;
+      padding: 1rem;
+      margin-top: 0.75rem;
     }
 
     .program-box h3 {
-      font-size: 1rem;
-      margin-bottom: 0.35rem;
+      font-size: 0.98rem;
+      margin-bottom: 0.3rem;
       color: #fff;
     }
 
     .program-meta {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--accent);
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.8rem;
       font-weight: 600;
     }
 
     .day-schedule {
       display: grid;
-      gap: 0.65rem;
+      gap: 0.6rem;
     }
 
     .day-item {
@@ -314,40 +467,45 @@
     .day-item strong {
       color: var(--accent);
       display: block;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
+      margin-bottom: 0.2rem;
     }
 
     .day-item span {
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       color: var(--text-muted);
+      display: block;
     }
 
+    /* Saved Client Records */
     .records-section {
       max-width: 1150px;
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 0 0.9rem;
     }
 
     .table-wrap {
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 0.5rem;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
+      min-width: 620px;
     }
 
     th, td {
       text-align: left;
-      padding: 0.75rem;
+      padding: 0.75rem 0.65rem;
       border-bottom: 1px solid var(--border);
     }
 
     th {
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
     }
 
@@ -358,19 +516,20 @@
     .disclaimer-footer {
       max-width: 1150px;
       margin: 1.5rem auto 0;
-      padding: 0 1rem;
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      padding: 0 0.9rem;
       text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
 
+    /* Print Styles */
     @media print {
       body { background: #fff; color: #000; }
-      header, .input-card, .records-section, .no-print { display: none !important; }
+      header, .input-card, .records-section, .no-print, .info-btn, .tooltip-bubble { display: none !important; }
       .container { display: block; max-width: 100%; }
       .card { border: none; box-shadow: none; background: #fff; color: #000; }
-      .program-box, .day-item, .metric-box { background: #f9f9f9; border-color: #ccc; color: #000; }
-      .card-header h2, .metric-box .val, .day-item strong { color: #000; }
+      .program-box, .day-item, .metric-box, .coach-note { background: #f9f9f9; border-color: #ccc; color: #000; }
+      .card-header h2, .metric-box .val, .day-item strong, .coach-note strong { color: #000; }
     }
   </style>
 </head>
@@ -391,6 +550,7 @@
   </header>
 
   <main class="container">
+    <!-- Left Column: Pre-Registration & Body Analyzer Inputs -->
     <section class="card input-card">
       <div class="card-header">
         <h2>1. Pre-Registration &amp; Scan Input</h2>
@@ -401,31 +561,53 @@
         <div class="form-grid">
           <div class="section-divider">Client Details</div>
           
-          <div class="full-width">
-            <label for="clientName">Full Name *</label>
+          <div class="field-group full-width">
+            <div class="label-row">
+              <label for="clientName">Full Name *</label>
+            </div>
             <input type="text" id="clientName" placeholder="e.g., Juan Dela Cruz" required />
           </div>
 
-          <div>
-            <label for="contactNo">Mobile / Messenger</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="contactNo">Mobile / Messenger</label>
+            </div>
             <input type="text" id="contactNo" placeholder="e.g., 0917-123-4567" />
           </div>
 
-          <div>
-            <label for="age">Age *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="age">Age *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Age info" title="Used to calculate your resting metabolic rate and recovery capacity.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Used to calculate your resting metabolic rate (BMR) and appropriate training intensity.</span>
+              </span>
+            </div>
             <input type="number" id="age" min="14" max="90" placeholder="28" required />
           </div>
 
-          <div>
-            <label for="gender">Biological Sex *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="gender">Biological Sex *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Biological sex info" title="Accounts for physiological differences in essential body fat ranges and BMR formulas.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Accounts for natural physiological differences in healthy body fat ranges and metabolic rate formulas.</span>
+              </span>
+            </div>
             <select id="gender" required>
               <option value="male">Male</option>
               <option value="female">Female</option>
             </select>
           </div>
 
-          <div>
-            <label for="experience">Training Experience *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="experience">Training Experience *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Training experience info" title="Determines weekly workout split frequency, exercise complexity, and volume.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Determines your weekly workout split (3-day vs. 4-day), exercise selection, and training volume.</span>
+              </span>
+            </div>
             <select id="experience" required>
               <option value="beginner">Beginner (0–6 mos)</option>
               <option value="intermediate">Intermediate (6–24 mos)</option>
@@ -433,42 +615,84 @@
             </select>
           </div>
 
-          <div class="section-divider">Body Analyzer Metrics</div>
+          <div class="section-divider">Body Analyzer Metrics (Hover or Tap ? for Info)</div>
 
-          <div>
-            <label for="height">Height (cm) *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="height">Height (cm) *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Height info" title="Standing height in centimeters. Used with weight to compute BMI and BMR.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Standing height in centimeters (cm). Combined with weight to compute your BMI and daily calorie baseline.</span>
+              </span>
+            </div>
             <input type="number" id="height" step="0.1" min="100" max="250" placeholder="172" required />
           </div>
 
-          <div>
-            <label for="weight">Weight (kg) *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="weight">Weight (kg) *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Weight info" title="Total body mass in kilograms measured on the body analyzer scale.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Total body weight in kilograms (kg) measured on the analyzer scale. Used to set calorie and protein targets.</span>
+              </span>
+            </div>
             <input type="number" id="weight" step="0.1" min="30" max="250" placeholder="78.5" required />
           </div>
 
-          <div>
-            <label for="bodyFat">Body Fat (%) *</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="bodyFat">Body Fat (%) *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Body fat percentage info" title="Percentage of total weight made up of fat tissue. Healthy ranges: ~10–20% (Men), ~18–28% (Women).">?</button>
+                <span class="tooltip-bubble" role="tooltip">Percentage of total body weight made of fat tissue. Typical fitness ranges are 10–20% for men and 18–28% for women.</span>
+              </span>
+            </div>
             <input type="number" id="bodyFat" step="0.1" min="3" max="60" placeholder="24.5" required />
           </div>
 
-          <div>
-            <label for="muscleMass">Skeletal Muscle (kg)</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="muscleMass">Skeletal Muscle (kg)</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Skeletal muscle mass info" title="Weight of muscles attached to bones that drive movement and boost resting metabolism.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Weight of muscles attached to your skeleton that power movement. Higher muscle mass boosts resting calorie burn.</span>
+              </span>
+            </div>
             <input type="number" id="muscleMass" step="0.1" min="10" max="100" placeholder="32.4" />
           </div>
 
-          <div>
-            <label for="visceralFat">Visceral Fat Level (1–30)</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="visceralFat">Visceral Fat Level (1–30)</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Visceral fat info" title="Fat stored deep around abdominal organs. Levels 1–12 are healthy; 13+ indicates elevated health risk.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Fat stored around internal abdominal organs. Levels 1–12 are considered healthy; 13 or higher signals excess visceral fat.</span>
+              </span>
+            </div>
             <input type="number" id="visceralFat" min="1" max="30" placeholder="9" />
           </div>
 
-          <div>
-            <label for="bmr">Basal Metabolic Rate (kcal)</label>
+          <div class="field-group">
+            <div class="label-row">
+              <label for="bmr">Basal Metabolic Rate (kcal)</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Basal metabolic rate info" title="Calories burned daily at complete rest. Leave blank to auto-calculate from your scan.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Minimum daily calories your body burns at complete rest. Leave blank if unknown—the app will auto-calculate it.</span>
+              </span>
+            </div>
             <input type="number" id="bmr" min="800" max="4000" placeholder="1680" />
           </div>
 
           <div class="section-divider">Primary Fitness Goal</div>
 
-          <div class="full-width">
-            <label for="goal">Select Target Goal *</label>
+          <div class="field-group full-width">
+            <div class="label-row">
+              <label for="goal">Select Target Goal *</label>
+              <span class="tooltip-wrapper">
+                <button type="button" class="info-btn" aria-label="Target goal info" title="Tailors your calorie intake and workout split toward fat loss, muscle growth, or endurance.">?</button>
+                <span class="tooltip-bubble" role="tooltip">Tailors your daily calorie target and weekly workout routine toward fat loss, muscle gain, recomposition, or stamina.</span>
+              </span>
+            </div>
             <select id="goal" required>
               <option value="fat_loss">Weight &amp; Body Fat Loss</option>
               <option value="hypertrophy">Muscle Gain &amp; Hypertrophy</option>
@@ -482,6 +706,7 @@
       </form>
     </section>
 
+    <!-- Right Column: Analysis & Program Output -->
     <section class="card" id="resultCard">
       <div class="card-header">
         <h2>2. Analysis &amp; Training Blueprint</h2>
@@ -489,35 +714,43 @@
       </div>
 
       <div id="emptyState" class="empty-state">
-        <p style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-main);">No Scan Analyzed Yet</p>
-        <p style="font-size: 0.88rem;">Enter client pre-registration details and body analyzer readings on the left to automatically generate a tailored Olympuz Fitness training program.</p>
+        <p style="font-size: 1.02rem; margin-bottom: 0.5rem; color: var(--text-main);">No Scan Analyzed Yet</p>
+        <p style="font-size: 0.86rem;">Enter client pre-registration details and body analyzer readings on the left to automatically generate a tailored Olympuz Fitness training program.</p>
       </div>
 
       <div id="resultContent" style="display: none;">
         <div style="margin-bottom: 1rem;">
-          <h3 id="resClientTitle" style="font-size: 1.2rem; color: #fff;"></h3>
+          <h3 id="resClientTitle" style="font-size: 1.15rem; color: #fff;"></h3>
           <p id="resClientSub" style="font-size: 0.82rem; color: var(--text-muted);"></p>
         </div>
 
         <div class="metrics-summary">
           <div class="metric-box">
-            <div class="lbl">Calculated BMI</div>
-            <div class="val" id="resBmi">--</div>
+            <div>
+              <div class="lbl">Calculated BMI</div>
+              <div class="val" id="resBmi">--</div>
+            </div>
             <div class="tag" id="resBmiTag">--</div>
           </div>
           <div class="metric-box">
-            <div class="lbl">Body Fat %</div>
-            <div class="val" id="resBf">--</div>
+            <div>
+              <div class="lbl">Body Fat %</div>
+              <div class="val" id="resBf">--</div>
+            </div>
             <div class="tag" id="resBfTag">--</div>
           </div>
           <div class="metric-box">
-            <div class="lbl">Daily Target</div>
-            <div class="val" id="resCalories">--</div>
+            <div>
+              <div class="lbl">Daily Target</div>
+              <div class="val" id="resCalories">--</div>
+            </div>
             <div class="tag">kcal / day</div>
           </div>
         </div>
 
-        <div class="health-note" id="healthNote"></div>
+        <div class="coach-note">
+          <strong>Coach Assessment:</strong> <span id="healthNote"></span>
+        </div>
 
         <div class="program-box">
           <h3 id="progTitle">Recommended Program</h3>
@@ -528,11 +761,12 @@
     </section>
   </main>
 
+  <!-- Offline Saved Client History -->
   <section class="records-section">
     <div class="card">
       <div class="card-header">
         <h2>Saved Offline Pre-Registrations (<span id="recordCount">0</span>)</h2>
-        <div style="display: flex; gap: 0.5rem;">
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
           <button type="button" class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
           <button type="button" class="btn btn-danger" onclick="clearAllRecords()">Clear All</button>
         </div>
@@ -561,12 +795,34 @@
   </section>
 
   <footer class="disclaimer-footer">
-    This is for informational purposes only. For medical advice or diagnosis, consult a professional. AI responses may include mistakes.
+    This tool provides general fitness and wellness estimates for informational purposes only and is not a substitute for professional medical advice.
   </footer>
 
   <script>
     const STORAGE_KEY = 'olympuz_offline_clients_v1';
 
+    // Touch-friendly tooltip toggle logic
+    document.querySelectorAll('.info-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const wrapper = btn.closest('.tooltip-wrapper');
+        const wasActive = wrapper.classList.contains('active');
+        document.querySelectorAll('.tooltip-wrapper.active').forEach(el => el.classList.remove('active'));
+        if (!wasActive) {
+          wrapper.classList.add('active');
+        }
+      });
+    });
+
+    // Close active tooltips when tapping outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.tooltip-wrapper')) {
+        document.querySelectorAll('.tooltip-wrapper.active').forEach(el => el.classList.remove('active'));
+      }
+    });
+
+    // Update network indicator
     function updateNetworkUI() {
       const statusText = document.getElementById('statusText');
       if (navigator.onLine) {
@@ -579,6 +835,7 @@
     window.addEventListener('offline', updateNetworkUI);
     updateNetworkUI();
 
+    // Load sample data for quick testing/demo
     function fillSampleData() {
       document.getElementById('clientName').value = 'Marco Reyes';
       document.getElementById('contactNo').value = '0918-555-0192';
@@ -594,6 +851,7 @@
       document.getElementById('goal').value = 'fat_loss';
     }
 
+    // Core analysis & program engine
     function handleAnalyze(e) {
       e.preventDefault();
 
@@ -617,9 +875,15 @@
       const analysis = generateProgramLogic(data);
       renderResult(data, analysis);
       saveRecord({ ...data, analysis });
+
+      // Smooth scroll to results on mobile screens
+      if (window.innerWidth <= 880) {
+        document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     function generateProgramLogic(d) {
+      // 1. BMI Calculation
       const heightM = d.height / 100;
       const bmi = +(d.weight / (heightM * heightM)).toFixed(1);
       let bmiCategory = 'Normal';
@@ -627,6 +891,7 @@
       else if (bmi >= 25 && bmi < 30) bmiCategory = 'Overweight';
       else if (bmi >= 30) bmiCategory = 'Obese';
 
+      // 2. Body Fat Classification
       let bfCategory = 'Fitness / Healthy';
       if (d.gender === 'male') {
         if (d.bodyFat < 14) bfCategory = 'Athletic';
@@ -636,10 +901,12 @@
         else if (d.bodyFat > 31) bfCategory = 'High Body Fat';
       }
 
+      // 3. Estimate BMR if not provided by machine (Mifflin-St Jeor)
       const estimatedBmr = d.bmr || Math.round(
         (10 * d.weight) + (6.25 * d.height) - (5 * d.age) + (d.gender === 'male' ? 5 : -161)
       );
 
+      // 4. Calorie Target based on goal
       const tdee = Math.round(estimatedBmr * 1.45);
       let targetCalories = tdee;
       let goalLabel = '';
@@ -658,15 +925,17 @@
         goalLabel = 'Endurance & Conditioning';
       }
 
+      // 5. Coach / Health Note
       let note = `Estimated BMR is ${estimatedBmr} kcal. `;
       if (d.visceralFat && d.visceralFat >= 13) {
         note += `Visceral fat level (${d.visceralFat}) is elevated—prioritize consistent low-impact cardio and whole-food nutrition alongside strength work.`;
       } else if (bfCategory === 'High Body Fat' && d.goal === 'hypertrophy') {
-        note += `Body fat is currently ${d.bodyFat}%. Recommended starting with a 4-week metabolic conditioning phase before heavy caloric surplus.`;
+        note += `Body fat is currently ${d.bodyFat}%. Recommended starting with a 4-week metabolic conditioning phase before a heavy caloric surplus.`;
       } else {
         note += `Metrics align well with a ${d.experience}-level ${goalLabel.toLowerCase()} split. Focus on progressive overload and 1.6–2.0g protein per kg bodyweight.`;
       }
 
+      // 6. Auto-Designed Training Split
       let programTitle = '';
       let programMeta = '';
       let schedule = [];
@@ -764,6 +1033,7 @@
       `).join('');
     }
 
+    // LocalStorage Persistence
     function getRecords() {
       try {
         return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -796,7 +1066,7 @@
       const record = getRecords().find(r => r.id === id);
       if (record) {
         renderResult(record, record.analysis);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
 
@@ -825,6 +1095,7 @@
       `).join('');
     }
 
+    // Export offline data to CSV for Excel/Google Sheets
     function exportCSV() {
       const records = getRecords();
       if (records.length === 0) {
@@ -832,7 +1103,7 @@
         return;
       }
 
-      const headers = ['Date', 'Name', 'Contact', 'Age', 'Sex', 'Experience', 'Height(cm)', 'Weight(kg)', 'BodyFat(%)', 'BMI', 'Goal', 'TargetCalories', 'AssignedProgram'];
+      const headers = ['Date', 'Name', 'Contact', 'Age', 'Sex', 'Experience', 'Height(cm)', 'Weight(kg)', 'BodyFat(%)', 'SkeletalMuscle(kg)', 'VisceralFat', 'BMI', 'Goal', 'TargetCalories', 'AssignedProgram'];
       const rows = records.map(r => [
         `"${r.date}"`,
         `"${r.name}"`,
@@ -843,6 +1114,8 @@
         r.height,
         r.weight,
         r.bodyFat,
+        r.muscleMass ?? '',
+        r.visceralFat ?? '',
         r.analysis.bmi,
         `"${r.analysis.goalLabel}"`,
         r.analysis.targetCalories,
@@ -859,6 +1132,7 @@
       document.body.removeChild(link);
     }
 
+    // Initialize table on load
     renderRecordsTable();
   </script>
 </body>
