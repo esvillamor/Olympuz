@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Olympuz Fitness Gym — Body Analyzer & Pre-Registration</title>
+  <style>
+    :root {
+      --bg-dark: #0f1115;
+      --bg-card: #181b22;
+      --bg-input: #222630;
+      --accent: #f5b014;
+      --accent-hover: #d9980b;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #2e3440;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.5;
+      padding-bottom: 3rem;
+    }
+
+    header {
+      background: linear-gradient(135deg, #14171f 0%, #1f2430 100%);
+      border-bottom: 2px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      background: var(--accent);
+      color: #000;
+      font-weight: 900;
+      font-size: 1.25rem;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      letter-spacing: -1px;
+    }
+
+    .brand h1 {
+      font-size: 1.25rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .brand p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid var(--success);
+      color: var(--success);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .container {
+      max-width: 1150px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 880px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.1rem;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .section-divider {
+      grid-column: 1 / -1;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin-top: 0.5rem;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 0.25rem;
+    }
+
+    .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.92rem;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #111;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-input);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.78rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .metrics-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .metric-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+      text-align: center;
+    }
+
+    .metric-box .val {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .metric-box .lbl {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .metric-box .tag {
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .health-note {
+      background: rgba(245, 176, 20, 0.1);
+      border: 1px solid rgba(245, 176, 20, 0.35);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      color: #fde68a;
+    }
+
+    .program-box {
+      background: #13161c;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.15rem;
+      margin-top: 1rem;
+    }
+
+    .program-box h3 {
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+      color: #fff;
+    }
+
+    .program-meta {
+      font-size: 0.82rem;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+      font-weight: 600;
+    }
+
+    .day-schedule {
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .day-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .day-item strong {
+      color: var(--accent);
+      display: block;
+      font-size: 0.88rem;
+    }
+
+    .day-item span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .records-section {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .disclaimer-footer {
+      max-width: 1150px;
+      margin: 1.5rem auto 0;
+      padding: 0 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      header, .input-card, .records-section, .no-print { display: none !important; }
+      .container { display: block; max-width: 100%; }
+      .card { border: none; box-shadow: none; background: #fff; color: #000; }
+      .program-box, .day-item, .metric-box { background: #f9f9f9; border-color: #ccc; color: #000; }
+      .card-header h2, .metric-box .val, .day-item strong { color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">OFG</div>
+      <div>
+        <h1>Olympuz Fitness Gym</h1>
+        <p>Offline Body Analyzer &amp; Pre-Registration System</p>
+      </div>
+    </div>
+    <div class="status-badge" id="networkStatus">
+      <span class="status-dot"></span>
+      <span id="statusText">Offline-Ready (Local Storage Active)</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card input-card">
+      <div class="card-header">
+        <h2>1. Pre-Registration &amp; Scan Input</h2>
+        <button type="button" class="btn btn-secondary" onclick="fillSampleData()">Load Sample Data</button>
+      </div>
+
+      <form id="analyzerForm" onsubmit="handleAnalyze(event)">
+        <div class="form-grid">
+          <div class="section-divider">Client Details</div>
+          
+          <div class="full-width">
+            <label for="clientName">Full Name *</label>
+            <input type="text" id="clientName" placeholder="e.g., Juan Dela Cruz" required />
+          </div>
+
+          <div>
+            <label for="contactNo">Mobile / Messenger</label>
+            <input type="text" id="contactNo" placeholder="e.g., 0917-123-4567" />
+          </div>
+
+          <div>
+            <label for="age">Age *</label>
+            <input type="number" id="age" min="14" max="90" placeholder="28" required />
+          </div>
+
+          <div>
+            <label for="gender">Biological Sex *</label>
+            <select id="gender" required>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="experience">Training Experience *</label>
+            <select id="experience" required>
+              <option value="beginner">Beginner (0–6 mos)</option>
+              <option value="intermediate">Intermediate (6–24 mos)</option>
+              <option value="advanced">Advanced (2+ yrs)</option>
+            </select>
+          </div>
+
+          <div class="section-divider">Body Analyzer Metrics</div>
+
+          <div>
+            <label for="height">Height (cm) *</label>
+            <input type="number" id="height" step="0.1" min="100" max="250" placeholder="172" required />
+          </div>
+
+          <div>
+            <label for="weight">Weight (kg) *</label>
+            <input type="number" id="weight" step="0.1" min="30" max="250" placeholder="78.5" required />
+          </div>
+
+          <div>
+            <label for="bodyFat">Body Fat (%) *</label>
+            <input type="number" id="bodyFat" step="0.1" min="3" max="60" placeholder="24.5" required />
+          </div>
+
+          <div>
+            <label for="muscleMass">Skeletal Muscle (kg)</label>
+            <input type="number" id="muscleMass" step="0.1" min="10" max="100" placeholder="32.4" />
+          </div>
+
+          <div>
+            <label for="visceralFat">Visceral Fat Level (1–30)</label>
+            <input type="number" id="visceralFat" min="1" max="30" placeholder="9" />
+          </div>
+
+          <div>
+            <label for="bmr">Basal Metabolic Rate (kcal)</label>
+            <input type="number" id="bmr" min="800" max="4000" placeholder="1680" />
+          </div>
+
+          <div class="section-divider">Primary Fitness Goal</div>
+
+          <div class="full-width">
+            <label for="goal">Select Target Goal *</label>
+            <select id="goal" required>
+              <option value="fat_loss">Weight &amp; Body Fat Loss</option>
+              <option value="hypertrophy">Muscle Gain &amp; Hypertrophy</option>
+              <option value="recomp">Body Recomposition (Lose Fat + Build Muscle)</option>
+              <option value="endurance">Athletic Endurance &amp; Conditioning</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Analyze Metrics &amp; Generate Program</button>
+      </form>
+    </section>
+
+    <section class="card" id="resultCard">
+      <div class="card-header">
+        <h2>2. Analysis &amp; Training Blueprint</h2>
+        <button type="button" class="btn btn-secondary no-print" id="printBtn" style="display:none;" onclick="window.print()">Print / Save PDF</button>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <p style="font-size: 1.05rem; margin-bottom: 0.5rem; color: var(--text-main);">No Scan Analyzed Yet</p>
+        <p style="font-size: 0.88rem;">Enter client pre-registration details and body analyzer readings on the left to automatically generate a tailored Olympuz Fitness training program.</p>
+      </div>
+
+      <div id="resultContent" style="display: none;">
+        <div style="margin-bottom: 1rem;">
+          <h3 id="resClientTitle" style="font-size: 1.2rem; color: #fff;"></h3>
+          <p id="resClientSub" style="font-size: 0.82rem; color: var(--text-muted);"></p>
+        </div>
+
+        <div class="metrics-summary">
+          <div class="metric-box">
+            <div class="lbl">Calculated BMI</div>
+            <div class="val" id="resBmi">--</div>
+            <div class="tag" id="resBmiTag">--</div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">Body Fat %</div>
+            <div class="val" id="resBf">--</div>
+            <div class="tag" id="resBfTag">--</div>
+          </div>
+          <div class="metric-box">
+            <div class="lbl">Daily Target</div>
+            <div class="val" id="resCalories">--</div>
+            <div class="tag">kcal / day</div>
+          </div>
+        </div>
+
+        <div class="health-note" id="healthNote"></div>
+
+        <div class="program-box">
+          <h3 id="progTitle">Recommended Program</h3>
+          <div class="program-meta" id="progMeta"></div>
+          <div class="day-schedule" id="progSchedule"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <section class="records-section">
+    <div class="card">
+      <div class="card-header">
+        <h2>Saved Offline Pre-Registrations (<span id="recordCount">0</span>)</h2>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+          <button type="button" class="btn btn-danger" onclick="clearAllRecords()">Clear All</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Client Name</th>
+              <th>Goal</th>
+              <th>Weight / BF%</th>
+              <th>Assigned Program</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody">
+            <tr>
+              <td colspan="6" style="text-align:center; color: var(--text-muted);">No saved records stored on this device yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="disclaimer-footer">
+    This is for informational purposes only. For medical advice or diagnosis, consult a professional. AI responses may include mistakes.
+  </footer>
+
+  <script>
+    const STORAGE_KEY = 'olympuz_offline_clients_v1';
+
+    function updateNetworkUI() {
+      const statusText = document.getElementById('statusText');
+      if (navigator.onLine) {
+        statusText.textContent = 'Offline-First Ready (Online)';
+      } else {
+        statusText.textContent = 'Offline Mode Active (Saving Locally)';
+      }
+    }
+    window.addEventListener('online', updateNetworkUI);
+    window.addEventListener('offline', updateNetworkUI);
+    updateNetworkUI();
+
+    function fillSampleData() {
+      document.getElementById('clientName').value = 'Marco Reyes';
+      document.getElementById('contactNo').value = '0918-555-0192';
+      document.getElementById('age').value = 29;
+      document.getElementById('gender').value = 'male';
+      document.getElementById('experience').value = 'beginner';
+      document.getElementById('height').value = 170;
+      document.getElementById('weight').value = 84.5;
+      document.getElementById('bodyFat').value = 26.8;
+      document.getElementById('muscleMass').value = 33.1;
+      document.getElementById('visceralFat').value = 11;
+      document.getElementById('bmr').value = 1740;
+      document.getElementById('goal').value = 'fat_loss';
+    }
+
+    function handleAnalyze(e) {
+      e.preventDefault();
+
+      const data = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }),
+        name: document.getElementById('clientName').value.trim(),
+        contact: document.getElementById('contactNo').value.trim() || 'N/A',
+        age: parseInt(document.getElementById('age').value, 10),
+        gender: document.getElementById('gender').value,
+        experience: document.getElementById('experience').value,
+        height: parseFloat(document.getElementById('height').value),
+        weight: parseFloat(document.getElementById('weight').value),
+        bodyFat: parseFloat(document.getElementById('bodyFat').value),
+        muscleMass: parseFloat(document.getElementById('muscleMass').value) || null,
+        visceralFat: parseInt(document.getElementById('visceralFat').value, 10) || null,
+        bmr: parseInt(document.getElementById('bmr').value, 10) || null,
+        goal: document.getElementById('goal').value
+      };
+
+      const analysis = generateProgramLogic(data);
+      renderResult(data, analysis);
+      saveRecord({ ...data, analysis });
+    }
+
+    function generateProgramLogic(d) {
+      const heightM = d.height / 100;
+      const bmi = +(d.weight / (heightM * heightM)).toFixed(1);
+      let bmiCategory = 'Normal';
+      if (bmi < 18.5) bmiCategory = 'Underweight';
+      else if (bmi >= 25 && bmi < 30) bmiCategory = 'Overweight';
+      else if (bmi >= 30) bmiCategory = 'Obese';
+
+      let bfCategory = 'Fitness / Healthy';
+      if (d.gender === 'male') {
+        if (d.bodyFat < 14) bfCategory = 'Athletic';
+        else if (d.bodyFat > 24) bfCategory = 'High Body Fat';
+      } else {
+        if (d.bodyFat < 21) bfCategory = 'Athletic';
+        else if (d.bodyFat > 31) bfCategory = 'High Body Fat';
+      }
+
+      const estimatedBmr = d.bmr || Math.round(
+        (10 * d.weight) + (6.25 * d.height) - (5 * d.age) + (d.gender === 'male' ? 5 : -161)
+      );
+
+      const tdee = Math.round(estimatedBmr * 1.45);
+      let targetCalories = tdee;
+      let goalLabel = '';
+
+      if (d.goal === 'fat_loss') {
+        targetCalories = Math.round(tdee - 450);
+        goalLabel = 'Weight & Fat Loss';
+      } else if (d.goal === 'hypertrophy') {
+        targetCalories = Math.round(tdee + 300);
+        goalLabel = 'Muscle Gain & Hypertrophy';
+      } else if (d.goal === 'recomp') {
+        targetCalories = tdee;
+        goalLabel = 'Body Recomposition';
+      } else {
+        targetCalories = Math.round(tdee + 150);
+        goalLabel = 'Endurance & Conditioning';
+      }
+
+      let note = `Estimated BMR is ${estimatedBmr} kcal. `;
+      if (d.visceralFat && d.visceralFat >= 13) {
+        note += `Visceral fat level (${d.visceralFat}) is elevated—prioritize consistent low-impact cardio and whole-food nutrition alongside strength work.`;
+      } else if (bfCategory === 'High Body Fat' && d.goal === 'hypertrophy') {
+        note += `Body fat is currently ${d.bodyFat}%. Recommended starting with a 4-week metabolic conditioning phase before heavy caloric surplus.`;
+      } else {
+        note += `Metrics align well with a ${d.experience}-level ${goalLabel.toLowerCase()} split. Focus on progressive overload and 1.6–2.0g protein per kg bodyweight.`;
+      }
+
+      let programTitle = '';
+      let programMeta = '';
+      let schedule = [];
+
+      if (d.goal === 'fat_loss') {
+        programTitle = d.experience === 'beginner'
+          ? 'Olympuz Metabolic Burn — 3-Day Full Body + LISS'
+          : 'Olympuz Shred Circuit — 4-Day Upper/Lower + HIIT';
+        programMeta = 'Focus: Caloric Expenditure, Joint-Safe Strength & Core Conditioning';
+        schedule = d.experience === 'beginner' ? [
+          { day: 'Day 1 — Full Body Strength A', detail: 'Goblet Squats 3x12, Dumbbell Bench Press 3x12, Lat Pulldowns 3x12, Plank 3x40s + 20m Brisk Incline Walk' },
+          { day: 'Day 2 — Active Recovery / Cardio', detail: '35 mins Stationary Bike or Treadmill Zone 2 Cardio + Mobility Stretching' },
+          { day: 'Day 3 — Full Body Strength B', detail: 'Romanian Deadlifts 3x12, Seated Shoulder Press 3x12, Seated Cable Row 3x12, Bird-Dogs 3x10/side' },
+          { day: 'Day 4 — Metabolic Conditioning', detail: 'Kettlebell Swings, Battle Ropes, Step-Ups & Rowing Ergometer (30s work / 30s rest x 5 rounds)' }
+        ] : [
+          { day: 'Day 1 — Upper Body Strength + Finisher', detail: 'Incline DB Press 4x10, Barbell Row 4x10, Overhead Press 3x12, Cable Face Pulls 3x15 + 12m Rowing HIIT' },
+          { day: 'Day 2 — Lower Body & Core', detail: 'Back Squats 4x10, Walking Lunges 3x12/leg, Lying Leg Curls 3x12, Hanging Knee Raises 3x15' },
+          { day: 'Day 3 — Upper Hypertrophy & Burn', detail: 'Pull-Ups/Lat Pulldown 4x10, Dips/Push-Ups 3x12, Lateral Raises 4x15, Farmer Carries 4x40m' },
+          { day: 'Day 4 — Lower Power & Conditioning', detail: 'Trap Bar Deadlift 4x8, Leg Press 3x15, Calf Raises 4x15 + 20m Stairmaster / Bike Intervals' }
+        ];
+      } else if (d.goal === 'hypertrophy') {
+        programTitle = d.experience === 'beginner'
+          ? 'Olympuz Foundation Mass — 3-Day Progressive Overload'
+          : 'Olympuz Hypertrophy Split — 4-Day Push/Pull/Legs/Upper';
+        programMeta = 'Focus: Mechanical Tension, Controlled Eccentrics & Muscle Growth';
+        schedule = d.experience === 'beginner' ? [
+          { day: 'Day 1 — Full Body Compound Focus', detail: 'Barbell/Goblet Squats 3x8-10, Flat Bench Press 3x8-10, Barbell Row 3x10, Plank 3x45s' },
+          { day: 'Day 2 — Posterior Chain & Shoulders', detail: 'Romanian Deadlift 3x10, Overhead Dumbbell Press 3x10, Lat Pulldown 3x12, Bicep Curls 2x12' },
+          { day: 'Day 3 — Lower & Upper Volume', detail: 'Leg Press 3x12, Incline Dumbbell Press 3x10, Seated Cable Row 3x12, Tricep Pushdowns 2x12' }
+        ] : [
+          { day: 'Day 1 — Push (Chest, Shoulders, Triceps)', detail: 'Barbell Bench Press 4x8, Incline DB Press 3x10, DB Lateral Raises 4x15, Overhead Tricep Ext 3x12' },
+          { day: 'Day 2 — Pull (Back, Rear Delts, Biceps)', detail: 'Weighted Pull-Ups/Pulldown 4x8-10, Chest-Supported Row 4x10, Rear Delt Fly 3x15, Hammer Curls 3x12' },
+          { day: 'Day 3 — Legs (Quads, Hamstrings, Calves)', detail: 'Barbell Back Squat 4x8, Romanian Deadlift 3x10, Leg Extension 3x12, Seated Calf Raise 4x15' },
+          { day: 'Day 4 — Upper Weak-Point & Core', detail: 'Overhead Press 4x8, Cable Chest Fly 3x12, Single-Arm DB Row 3x12, Cable Crunches 3x15' }
+        ];
+      } else if (d.goal === 'recomp') {
+        programTitle = 'Olympuz Total Recomp — 4-Day Strength + Metabolic Mix';
+        programMeta = 'Focus: Lean Mass Retention while Reducing Body Fat';
+        schedule = [
+          { day: 'Day 1 — Upper Strength', detail: 'Bench Press 4x8, Bent-Over Row 4x8, DB Shoulder Press 3x10, Superset: Curls & Pushdowns 3x12' },
+          { day: 'Day 2 — Lower Strength + Core', detail: 'Squats 4x8, Romanian Deadlift 3x10, Bulgarian Split Squats 3x10/leg, Ab Wheel/Plank 3 sets' },
+          { day: 'Day 3 — Full Body Metabolic Circuit', detail: 'Dumbbell Thrusters, Renegade Rows, Kettlebell Swings, Box Step-Ups (4 rounds, 45s work / 15s rest)' },
+          { day: 'Day 4 — Hypertrophy & Zone 2 Finish', detail: 'Lat Pulldown 3x12, Incline Push-Ups/Press 3x12, Leg Curls 3x12 + 25m Incline Treadmill Walk' }
+        ];
+      } else {
+        programTitle = 'Olympuz Athletic Engine — 4-Day Conditioning & Stamina';
+        programMeta = 'Focus: VO2 Max, Muscular Endurance & Functional Power';
+        schedule = [
+          { day: 'Day 1 — Functional Strength & Core', detail: 'Trap Bar Deadlift 4x8, Push Press 3x10, Pull-Ups 3xMax, Pallof Press 3x12/side' },
+          { day: 'Day 2 — Aerobic Base Endurance', detail: '40 mins Steady-State Running, Cycling, or Rowing at 65–75% Max Heart Rate' },
+          { day: 'Day 3 — Full Body Power & Agility', detail: 'Goblet Squats 3x15, Medicine Ball Slams 4x12, DB Walking Lunges 3x20 steps, Battle Ropes 4x30s' },
+          { day: 'Day 4 — Anaerobic Intervals', detail: '400m Run Repeats or 60s Hard Bike Sprints with 90s recovery (6–8 rounds) + Mobility' }
+        ];
+      }
+
+      return {
+        bmi,
+        bmiCategory,
+        bfCategory,
+        targetCalories,
+        goalLabel,
+        note,
+        programTitle,
+        programMeta,
+        schedule
+      };
+    }
+
+    function renderResult(data, analysis) {
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('resultContent').style.display = 'block';
+      document.getElementById('printBtn').style.display = 'inline-flex';
+
+      document.getElementById('resClientTitle').textContent = `${data.name} (${data.age} y/o, ${data.gender.toUpperCase()})`;
+      document.getElementById('resClientSub').textContent = `Goal: ${analysis.goalLabel} • Level: ${data.experience.toUpperCase()} • Contact: ${data.contact}`;
+
+      document.getElementById('resBmi').textContent = analysis.bmi;
+      document.getElementById('resBmiTag').textContent = analysis.bmiCategory;
+
+      document.getElementById('resBf').textContent = `${data.bodyFat}%`;
+      document.getElementById('resBfTag').textContent = analysis.bfCategory;
+
+      document.getElementById('resCalories').textContent = analysis.targetCalories.toLocaleString();
+      document.getElementById('healthNote').textContent = analysis.note;
+
+      document.getElementById('progTitle').textContent = analysis.programTitle;
+      document.getElementById('progMeta').textContent = analysis.programMeta;
+
+      const scheduleEl = document.getElementById('progSchedule');
+      scheduleEl.innerHTML = analysis.schedule.map(item => `
+        <div class="day-item">
+          <strong>${item.day}</strong>
+          <span>${item.detail}</span>
+        </div>
+      `).join('');
+    }
+
+    function getRecords() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveRecord(record) {
+      const records = getRecords();
+      records.unshift(record);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      renderRecordsTable();
+    }
+
+    function deleteRecord(id) {
+      const records = getRecords().filter(r => r.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      renderRecordsTable();
+    }
+
+    function clearAllRecords() {
+      if (confirm('Delete all saved offline client scans on this device?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderRecordsTable();
+      }
+    }
+
+    function viewRecord(id) {
+      const record = getRecords().find(r => r.id === id);
+      if (record) {
+        renderResult(record, record.analysis);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function renderRecordsTable() {
+      const records = getRecords();
+      document.getElementById('recordCount').textContent = records.length;
+      const tbody = document.getElementById('recordsBody');
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No saved records stored on this device yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td>${r.date}</td>
+          <td><strong>${r.name}</strong><br><span style="font-size:0.75rem;color:var(--text-muted)">${r.contact}</span></td>
+          <td>${r.analysis.goalLabel}</td>
+          <td>${r.weight} kg / ${r.bodyFat}%</td>
+          <td>${r.analysis.programTitle}</td>
+          <td style="display:flex; gap:0.4rem;">
+            <button class="btn btn-secondary" onclick="viewRecord(${r.id})">View</button>
+            <button class="btn btn-danger" onclick="deleteRecord(${r.id})">Del</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function exportCSV() {
+      const records = getRecords();
+      if (records.length === 0) {
+        alert('No records to export yet.');
+        return;
+      }
+
+      const headers = ['Date', 'Name', 'Contact', 'Age', 'Sex', 'Experience', 'Height(cm)', 'Weight(kg)', 'BodyFat(%)', 'BMI', 'Goal', 'TargetCalories', 'AssignedProgram'];
+      const rows = records.map(r => [
+        `"${r.date}"`,
+        `"${r.name}"`,
+        `"${r.contact}"`,
+        r.age,
+        r.gender,
+        r.experience,
+        r.height,
+        r.weight,
+        r.bodyFat,
+        r.analysis.bmi,
+        `"${r.analysis.goalLabel}"`,
+        r.analysis.targetCalories,
+        `"${r.analysis.programTitle}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `Olympuz_BodyAnalyzer_Records_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    renderRecordsTable();
+  </script>
+</body>
+</html>
