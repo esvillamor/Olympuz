@@ -924,9 +924,9 @@
     function updateNetworkUI() {
       const statusText = document.getElementById('statusText');
       if (navigator.onLine) {
-        statusText.textContent = 'Offline-First Ready (Online)';
+        statusText.textContent = 'Online';
       } else {
-        statusText.textContent = 'Offline (Saving Locally)';
+        statusText.textContent = 'Offline';
       }
     }
     window.addEventListener('online', updateNetworkUI);
