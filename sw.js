@@ -1,8 +1,11 @@
-const CACHE_NAME = 'olympuz-offline-v5';
+const CACHE_NAME = 'olympuz-offline-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './logo.jpg'
+  './manifest.json',
+  './logo.jpg',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 // Install event: caches your app files on the device
