@@ -1,4 +1,4 @@
-const CACHE_NAME = 'olympuz-offline-v2';
+const CACHE_NAME = 'olympuz-offline-v5'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -8,17 +8,17 @@ const ASSETS_TO_CACHE = [
   './icon-512.png'
 ];
 
-// Install event: caches your app files on the device
+// Install event: caches your app files and forces immediate activation
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
-  self.skipWaiting();
 });
 
-// Activate event: cleans up old caches if you update the app later
+// Activate event: cleans up old caches and takes control immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -29,16 +29,30 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch event: serves cached files when offline
+// Fetch event: Network-First when online, falls back to Cache when offline
 self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        // If online and valid response, update the cache with the newest file
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        // If offline or network fails, serve the saved file from cache
+        return caches.match(event.request);
+      })
   );
 });
