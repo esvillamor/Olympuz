@@ -1,4 +1,4 @@
-const CACHE_NAME = 'olympuz-offline-v5'; 
+const CACHE_NAME = 'olympuz-offline-v1'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
