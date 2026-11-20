@@ -1556,5 +1556,313 @@
     </svg>
   </a>
 </div>
+
+<!-- =====================================================================
+     START: DICT SPARK GROUP PORTFOLIO ATTRIBUTION & OFFLINE CREDITS MODAL
+     ===================================================================== -->
+<style>
+  .spark-footer {
+    margin: 2rem auto 1rem;
+    padding: 1.25rem 1rem 2rem;
+    max-width: 960px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: center;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    line-height: 1.5;
+  }
+
+  .spark-footer-links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  .spark-link {
+    color: #f59e0b;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .spark-link:hover {
+    text-decoration: underline;
+  }
+
+  .spark-credits-btn {
+    background: rgba(245, 158, 11, 0.14);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .spark-credits-btn:hover {
+    background: rgba(245, 158, 11, 0.25);
+  }
+
+  .spark-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 99999;
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .spark-modal-backdrop.is-open {
+    display: flex;
+  }
+
+  .spark-modal-card {
+    background: #0f172a;
+    color: #f8fafc;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    border-radius: 14px;
+    max-width: 460px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.65);
+    font-family: system-ui, -apple-system, sans-serif;
+    text-align: left;
+  }
+
+  .spark-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .spark-modal-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.15);
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    margin-bottom: 0.35rem;
+  }
+
+  .spark-modal-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .spark-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+  }
+
+  .spark-modal-close:hover {
+    color: #ffffff;
+  }
+
+  .spark-modal-desc {
+    font-size: 0.87rem;
+    color: #cbd5e1;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+  }
+
+  .spark-team-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .spark-team-list li {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.83rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .spark-team-name {
+    font-weight: 600;
+    color: #f1f5f9;
+  }
+
+  .spark-team-role {
+    color: #fbbf24;
+    font-size: 0.78rem;
+    font-weight: 500;
+  }
+
+  .spark-cta-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #f59e0b;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    box-sizing: border-box;
+  }
+
+  .spark-cta-btn:hover {
+    background: #fbbf24;
+  }
+
+  /* Automatically hides this footer when printing a client's workout PDF */
+  @media print {
+    .spark-footer,
+    .spark-modal-backdrop {
+      display: none !important;
+    }
+  }
+</style>
+
+<footer class="spark-footer" aria-label="DICT SPARK System Credits">
+  <div>
+    Digital Growth &amp; Web System engineered for <strong>Olympuz Fitness Gym (Iloilo City)</strong>
+  </div>
+  <div class="spark-footer-links">
+    <button type="button" class="spark-credits-btn" id="openSparkModalBtn">
+      ⓘ Project Team &amp; Case Study
+    </button>
+    <span>•</span>
+    <a
+      href="https://esvillamor.github.io/DICT-SPARK/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="spark-link"
+    >
+      DICT ILCDB SPARK Collective Portfolio ↗
+    </a>
+  </div>
+</footer>
+
+<div
+  class="spark-modal-backdrop"
+  id="sparkCreditsModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="sparkModalTitle"
+>
+  <div class="spark-modal-card">
+    <div class="spark-modal-header">
+      <div>
+        <span class="spark-modal-badge">DICT ILCDB SPARK Program</span>
+        <h3 class="spark-modal-title" id="sparkModalTitle">Olympuz Growth Suite</h3>
+      </div>
+      <button
+        type="button"
+        class="spark-modal-close"
+        id="closeSparkModalBtn"
+        aria-label="Close modal"
+      >
+        &times;
+      </button>
+    </div>
+
+    <p class="spark-modal-desc">
+      This offline-first Body Analyzer &amp; Pre-Registration PWA is part of a 5-phase digital
+      marketing and brand engineering deployment built for Olympuz Fitness Gym (Ledesma St., Iloilo City).
+    </p>
+
+    <ul class="spark-team-list">
+      <li>
+        <span class="spark-team-name">Ferly Joy Penuela</span>
+        <span class="spark-team-role">Account Lead</span>
+      </li>
+      <li>
+        <span class="spark-team-name">Franz Mhyko Flores</span>
+        <span class="spark-team-role">Brand Lead</span>
+      </li>
+      <li>
+        <span class="spark-team-name">Eric Villamor</span>
+        <span class="spark-team-role">Data &amp; Web Systems</span>
+      </li>
+      <li>
+        <span class="spark-team-name">Joseph Michael Aparri</span>
+        <span class="spark-team-role">Search Lead</span>
+      </li>
+      <li>
+        <span class="spark-team-name">Juvir Ang</span>
+        <span class="spark-team-role">Community Lead</span>
+      </li>
+      <li>
+        <span class="spark-team-name">Bonn Christian Pampag</span>
+        <span class="spark-team-role">Content Lead</span>
+      </li>
+    </ul>
+
+    <a
+      href="https://esvillamor.github.io/DICT-SPARK/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="spark-cta-btn"
+    >
+      View Full Case Study &amp; Portfolio (Online) →
+    </a>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var openBtn = document.getElementById('openSparkModalBtn');
+    var closeBtn = document.getElementById('closeSparkModalBtn');
+    var modal = document.getElementById('sparkCreditsModal');
+
+    if (!openBtn || !closeBtn || !modal) return;
+
+    openBtn.addEventListener('click', function () {
+      modal.classList.add('is-open');
+    });
+
+    closeBtn.addEventListener('click', function () {
+      modal.classList.remove('is-open');
+    });
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        modal.classList.remove('is-open');
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        modal.classList.remove('is-open');
+      }
+    });
+  })();
+</script>
+<!-- =====================================================================
+     END: DICT SPARK GROUP PORTFOLIO ATTRIBUTION & OFFLINE CREDITS MODAL
+     ===================================================================== -->
+
+
 </body>
 </html>
